@@ -19,8 +19,8 @@ organ = 2 # cancer of interest (1-brain tumor, 2-leukemia)
 betas = c(0.04) # set of true ERR values to evaluate 
 n_betas = length(betas)
 
-no_iterat = 1 # number of cohorts (= no of simulation runs)
-N = 50000 # number of subjects
+no_iterat = 500 # number of cohorts (= no of simulation runs)
+N = 150000 # number of subjects
 FollowUpYrs = 34 #max duration of follow-up (from 1979 up to and including 2012) 
 
 # Define matrices for storing main output results:
@@ -30,6 +30,7 @@ beta_est = matrix(0, no_iterat, n_betas)
 
 fit = matrix(0, no_iterat, n_betas)
 
+beta_est = matrix(0, no_iterat, n_betas)
 beta_est_f = matrix(0, no_iterat, n_betas)
 beta_est_no_thresh = matrix(0, no_iterat, n_betas)
 beta_sd = matrix(0, no_iterat, n_betas)
@@ -39,9 +40,7 @@ convergence_info_corrected = matrix(1, no_iterat, n_betas)
 p_value = matrix(0, no_iterat, n_betas)
 p_value_score = matrix(0, no_iterat, n_betas)
 p_value_f = matrix(0, no_iterat, n_betas)
-p_value_f_jac = matrix(0, no_iterat, n_betas)
 threshold = matrix(0, no_iterat, n_betas)
-profileCI = matrix(0, no_iterat, n_betas*2)
 thresh_flag = matrix(0, no_iterat, n_betas)
 coverage = matrix(0, no_iterat, n_betas)
 coverage_score = matrix(0, no_iterat, n_betas)
@@ -50,7 +49,6 @@ end_status_matrix = matrix(0, no_iterat, 3*n_betas)
 n_headCTs_matrix = matrix(0, no_iterat, n_betas)
 n_abdCTs_matrix = matrix(0, no_iterat, n_betas)
 n_chestCTs_matrix = matrix(0, no_iterat, n_betas)
-mean_organ_dose = matrix(0, no_iterat, n_betas)
 
 # (1) Loading external datasets:
 # Load cancer incidence data:
@@ -504,7 +502,6 @@ for (p in 1:n_betas){   # loop over different true parameter values
     n_headCTs_matrix[check, p] = sum(CT_type[,seq(1,105,3)])
     n_chestCTs_matrix[check, p] = sum(CT_type[,seq(2,105,3)])
     n_abdCTs_matrix[check, p] = sum(CT_type[,seq(3,105,3)])
-    mean_organ_dose[check, p] = sum(DoseCT)/sum(CT_type)
     
     # analysis
     temp_linerr = linearERR(final_data_rsets, set = 1, doses = c(2,2), status = 3, loc = 5, repar = F, ccmethod = "meandose")
